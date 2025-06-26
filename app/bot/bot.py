@@ -19,6 +19,8 @@ async def main(config: Config) -> None:
 
     dp = Dispatcher()
 
+    dp['config'] = config
+
     dp.include_routers(user_router)
     logger.info("Routers included")
 
