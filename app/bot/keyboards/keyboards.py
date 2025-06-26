@@ -7,7 +7,7 @@ def get_start_kb() -> InlineKeyboardMarkup:
     buttons.append([
         InlineKeyboardButton(
             text=RU['about_me'],
-            callback_data='button_1'
+            callback_data='about_me'
         ),
         InlineKeyboardButton(
             text=RU['tg_chennal'],
@@ -17,11 +17,23 @@ def get_start_kb() -> InlineKeyboardMarkup:
     buttons.append(
         [InlineKeyboardButton(
             text=RU['services'],
-            callback_data='button_1'
+            callback_data='services'
         ),
             InlineKeyboardButton(
             text=RU['courses'],
-            callback_data='button_1'
+            callback_data='courses'
         )]
+    )
+    return InlineKeyboardMarkup(inline_keyboard=buttons)
+
+
+def get_back_to_start_kb() -> InlineKeyboardMarkup:
+    buttons = []
+    buttons.append([
+        InlineKeyboardButton(
+            text=RU['back_to_start'],
+            callback_data='back_to_start'
+        )
+    ]
     )
     return InlineKeyboardMarkup(inline_keyboard=buttons)
