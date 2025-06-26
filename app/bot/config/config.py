@@ -19,9 +19,15 @@ class LogSettings:
 
 
 @dataclass
+class StaticSettings:
+    main_photo_path: str
+
+
+@dataclass
 class Config:
     bot: BotSettings
     log: LogSettings
+    static: StaticSettings
 
 
 def load_config(path: str | None = None):
@@ -44,5 +50,6 @@ def load_config(path: str | None = None):
 
     return Config(
         bot=BotSettings(token=env('BOT_TOKEN')),
-        log=log
+        log=log,
+        static=StaticSettings(main_photo_path=env('MAIN_PHOTO_PATH'))
     )

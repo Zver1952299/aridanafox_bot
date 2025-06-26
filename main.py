@@ -9,7 +9,7 @@ from app.bot import main
 config: Config = load_config()
 
 logging.basicConfig(
-    level=getattr(logging, config.log.level, logging.INFO),
+    level=getattr(logging, config.log.level, logging.DEBUG),
     format=config.log.format
 )
 
