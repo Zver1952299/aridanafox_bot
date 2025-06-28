@@ -13,6 +13,15 @@ class BotSettings:
 
 
 @dataclass
+class DatabaseSettings:
+    name: str
+    host: str
+    port: int
+    user: str
+    password: str
+
+
+@dataclass
 class LogSettings:
     level: str
     format: str
@@ -26,6 +35,7 @@ class StaticSettings:
 @dataclass
 class Config:
     bot: BotSettings
+    db: DatabaseSettings
     log: LogSettings
     static: StaticSettings
 
@@ -41,15 +51,31 @@ def load_config(path: str | None = None):
 
     env.read_env(path)
 
-    log = LogSettings(
-        level=env('LOG_LEVEL'),
-        format=env('LOG_FORMAT')
+    db = DatabaseSettings(
+        name=env('POSTGRES_DB'),
+        host=env('POSTGRES_HOST'),
+        port=env('POSTGRES_PORT'),
+        user=env('POSTGRES_USER'),
+        password=env('POSTGRES_PASSWORD')
+
     )
+
+    log = LogSettings(
+        level=env('LOG_LEVEL', 'INFO'),
+        format=env(
+            'LOG_FORMAT', "[%(asctime)s] #%(levelname)-8s %(filename)s:%(lineno)d - %(name)s - %(message)s")
+    )
+
+    token = env('BOT_TOKEN')
+
+    if not token:
+        raise ValueError("BOT_TOKEN is required in .env")
 
     logger.info("Configuration loaded successfully")
 
     return Config(
-        bot=BotSettings(token=env('BOT_TOKEN')),
+        bot=BotSettings(token=token),
+        db=db,
         log=log,
         static=StaticSettings(main_photo_path=env('MAIN_PHOTO_PATH'))
     )
