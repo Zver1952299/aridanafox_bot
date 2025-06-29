@@ -7,6 +7,7 @@ from psycopg_pool import AsyncConnectionPool
 from app.bot.config import Config
 from app.bot.handlers.user import user_router
 from app.bot.middlewares.database import DataBaseMiddleware
+from app.bot.middlewares.statistics import ActivityCounterMiddleware
 from app.infrastructure.database.connection import get_pg_pool
 
 logger = logging.getLogger(__name__)
@@ -36,6 +37,7 @@ async def main(config: Config) -> None:
     logger.info("Routers included")
 
     dp.update.middleware(DataBaseMiddleware())
+    dp.update.middleware(ActivityCounterMiddleware())
     logger.info("Middlewares included")
 
     try:

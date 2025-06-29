@@ -86,3 +86,22 @@ async def change_user_alive_status(
             params=(is_alive, user_id)
         )
     logger.info(f"Updated `is_alive` status to {is_alive} for user {user_id}")
+
+
+async def add_user_activity(
+        conn: AsyncConnection,
+        *,
+        user_id: int
+) -> None:
+    async with conn.cursor() as cursor:
+        await cursor.execute(
+            query="""
+                INSERT INTO activity (user_id)
+                VALUES (%s)
+                ON CONFLICT (user_id, activity_date)
+                DO UPDATE
+                SET actions = activity.actions + 1;
+            """,
+            params=(user_id,)
+        )
+    logger.info(f"User activity updated. table=`activity`, user_id={user_id}")
