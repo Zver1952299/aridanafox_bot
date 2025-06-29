@@ -29,16 +29,21 @@ async def process_start_command(
         message: Message,
         conn: AsyncConnection,
         bot: Bot,
-        config: Config):
+        config: Config,
+        admin_ids: list[int]):
     user_row = await get_user(conn, user_id=message.from_user.id)
 
     if user_row is None:
+        if message.from_user.id in admin_ids:
+            role = UserRole.ADMIN
+        else:
+            role = UserRole.USER
         await add_user(
             conn=conn,
             user_id=message.from_user.id,
             username=message.from_user.username,
             language='ru',
-            role=UserRole.USER,
+            role=role,
             is_alive=True,
             banned=False
         )

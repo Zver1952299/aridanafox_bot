@@ -10,6 +10,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class BotSettings:
     token: str
+    admin_ids: list[int]
 
 
 @dataclass
@@ -67,6 +68,12 @@ def load_config(path: str | None = None):
     )
 
     token = env('BOT_TOKEN')
+    raw_ids = env.list('ADMIN_IDS', default=[])
+
+    try:
+        admin_ids = [int(x) for x in raw_ids]
+    except ValueError as e:
+        raise ValueError(f"ADMIN_IDS must be integers, got: {raw_ids}") from e
 
     if not token:
         raise ValueError("BOT_TOKEN is required in .env")
@@ -74,7 +81,7 @@ def load_config(path: str | None = None):
     logger.info("Configuration loaded successfully")
 
     return Config(
-        bot=BotSettings(token=token),
+        bot=BotSettings(token=token, admin_ids=admin_ids),
         db=db,
         log=log,
         static=StaticSettings(main_photo_path=env('MAIN_PHOTO_PATH'))

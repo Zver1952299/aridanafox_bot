@@ -42,7 +42,8 @@ async def main(config: Config) -> None:
 
     try:
         await dp.start_polling(
-            bot, db_pool=db_pool)
+            bot, db_pool=db_pool,
+            admin_ids=config.bot.admin_ids)
     except Exception as e:
         logger.exception(e)
     finally:
