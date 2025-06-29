@@ -1,8 +1,8 @@
 import logging
 
 from aiogram import Router, Bot, F
-from aiogram.filters import CommandStart
-from aiogram.types import Message, FSInputFile, BotCommandScopeChat, CallbackQuery
+from aiogram.filters import CommandStart, KICKED, ChatMemberUpdatedFilter
+from aiogram.types import Message, FSInputFile, BotCommandScopeChat, CallbackQuery, ChatMemberUpdated
 from aiogram.enums import BotCommandScopeType
 from app.bot.config import Config
 from locales.ru.txt import RU
@@ -12,7 +12,8 @@ from app.bot.utils import send_text_page
 from app.bot.enums.command import TextKey
 from app.infrastructure.database.db import (
     add_user,
-    get_user
+    get_user,
+    change_user_alive_status
 )
 from app.bot.enums.roles import UserRole
 from psycopg import AsyncConnection
@@ -41,6 +42,9 @@ async def process_start_command(
             is_alive=True,
             banned=False
         )
+
+    if user_row and not user_row[5]:
+        await change_user_alive_status(conn, user_id=message.from_user.id, is_alive=True)
 
     logger.info(f"User {message.from_user.id} started bot.")
 
@@ -83,3 +87,9 @@ async def process_back_to_start_press(callback: CallbackQuery, config: Config):
         caption=RU.get(TextKey.START, 'Добро пожаловать!'),
         reply_markup=get_start_kb()
     )
+
+
+@user_router.my_chat_member(ChatMemberUpdatedFilter(member_status_changed=KICKED))
+async def process_user_blocked_bot(event: ChatMemberUpdated, conn: AsyncConnection):
+    logger.info(f"User {event.from_user.id} has blocked the bot")
+    await change_user_alive_status(conn, user_id=event.from_user.id, is_alive=False)

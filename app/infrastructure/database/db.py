@@ -48,7 +48,7 @@ async def add_user(
 async def get_user(
     conn: AsyncConnection,
     *,
-    user_id
+    user_id: int
 ) -> tuple[Any, ...] | None:
     async with conn.cursor() as cursor:
         data = await cursor.execute(
@@ -68,3 +68,21 @@ async def get_user(
         row = await data.fetchone()
     logger.info(f"Row is {row}")
     return row if row else None
+
+
+async def change_user_alive_status(
+    conn: AsyncConnection,
+    *,
+    user_id: int,
+    is_alive: bool
+) -> None:
+    async with conn.cursor() as cursor:
+        await cursor.execute(
+            query="""
+                UPDATE users
+                SET is_alive = %s
+                WHERE user_id = %s;
+            """,
+            params=(is_alive, user_id)
+        )
+    logger.info(f"Updated `is_alive` status to {is_alive} for user {user_id}")
