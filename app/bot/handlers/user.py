@@ -9,7 +9,13 @@ from locales.ru.txt import RU
 from app.bot.keyboards.main_menu import get_main_menu_commands
 from app.bot.keyboards.keyboards import get_start_kb
 from app.bot.utils import send_text_page
-from app.bot.enums import TextKey
+from app.bot.enums.command import TextKey
+from app.infrastructure.database.db import (
+    add_user,
+    get_user
+)
+from app.bot.enums.roles import UserRole
+from psycopg import AsyncConnection
 
 
 logger = logging.getLogger(__name__)
@@ -18,7 +24,24 @@ user_router = Router()
 
 
 @user_router.message(CommandStart())
-async def process_start_command(message: Message, bot: Bot, config: Config):
+async def process_start_command(
+        message: Message,
+        conn: AsyncConnection,
+        bot: Bot,
+        config: Config):
+    user_row = await get_user(conn, user_id=message.from_user.id)
+
+    if user_row is None:
+        await add_user(
+            conn=conn,
+            user_id=message.from_user.id,
+            username=message.from_user.username,
+            language='ru',
+            role=UserRole.USER,
+            is_alive=True,
+            banned=False
+        )
+
     logger.info(f"User {message.from_user.id} started bot.")
 
     await bot.set_my_commands(
