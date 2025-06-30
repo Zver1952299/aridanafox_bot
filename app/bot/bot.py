@@ -6,6 +6,7 @@ from aiogram.enums.parse_mode import ParseMode
 from psycopg_pool import AsyncConnectionPool
 from app.bot.config import Config
 from app.bot.handlers.user import user_router
+from app.bot.handlers.admin import admin_router
 from app.bot.middlewares.database import DataBaseMiddleware
 from app.bot.middlewares.statistics import ActivityCounterMiddleware
 from app.infrastructure.database.connection import get_pg_pool
@@ -34,6 +35,7 @@ async def main(config: Config) -> None:
     )
 
     dp.include_routers(user_router)
+    dp.include_routers(admin_router)
     logger.info("Routers included")
 
     dp.update.middleware(DataBaseMiddleware())

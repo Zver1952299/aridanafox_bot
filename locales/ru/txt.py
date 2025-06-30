@@ -50,6 +50,8 @@ RU: dict[str, str] = {
 
     '/help_description': "Посмотреть справку по работе бота",
 
+    '/statistics_description': "Посмотреть статистику по пользователям",
+
     'about_me': "Обо мне",
 
     'tg_chennal': "Мой канал",
@@ -58,6 +60,8 @@ RU: dict[str, str] = {
 
     'courses': "Курсы",
 
-    'back_to_start': 'Назад'
+    'back_to_start': 'Назад',
+
+    'statistics': 'Статистика по действиям пользователя:\n{}'
 
 }

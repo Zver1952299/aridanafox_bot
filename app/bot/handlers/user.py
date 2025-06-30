@@ -47,6 +47,8 @@ async def process_start_command(
             is_alive=True,
             banned=False
         )
+    else:
+        role = UserRole(user_row[4])
 
     if user_row and not user_row[5]:
         await change_user_alive_status(conn, user_id=message.from_user.id, is_alive=True)
@@ -54,7 +56,7 @@ async def process_start_command(
     logger.info(f"User {message.from_user.id} started bot.")
 
     await bot.set_my_commands(
-        commands=get_main_menu_commands(),
+        commands=get_main_menu_commands(role),
         scope=BotCommandScopeChat(
             type=BotCommandScopeType.CHAT,
             chat_id=message.from_user.id

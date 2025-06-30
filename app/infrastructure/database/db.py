@@ -105,3 +105,41 @@ async def add_user_activity(
             params=(user_id,)
         )
     logger.info(f"User activity updated. table=`activity`, user_id={user_id}")
+
+
+async def get_user_role(
+        conn: AsyncConnection,
+        *,
+        user_id: int
+) -> UserRole | None:
+    async with conn.cursor() as cursor:
+        data = await cursor.execute(
+            query="""
+                SELECT role FROM users WHERE user_id = %s;
+            """,
+            params=(user_id,)
+        )
+        row = await data.fetchone()
+    if row:
+        logger.info(
+            f"The user with `user_id`= {user_id} has the role is {row[0]}")
+    else:
+        logger.warning(
+            f"No user with `user_id`= {user_id} found in the database")
+    return UserRole(row[0]) if row else None
+
+
+async def get_statistics(conn: AsyncConnection) -> list[Any] | None:
+    async with conn.cursor() as cursor:
+        data = await cursor.execute(
+            query="""
+                SELECT user_id, SUM(actions) AS total_actions
+                FROM activity
+                GROUP BY user_id
+                ORDER BY total_actions DESC
+                LIMIT 5;
+            """
+        )
+        rows = await data.fetchall()
+    logger.info("Users activity got from table=`activity`")
+    return [*rows] if rows else None
