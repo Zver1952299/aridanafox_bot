@@ -14,6 +14,11 @@ class BotSettings:
 
 
 @dataclass
+class PaySettings:
+    token: str
+
+
+@dataclass
 class DatabaseSettings:
     name: str
     host: str
@@ -39,6 +44,7 @@ class Config:
     db: DatabaseSettings
     log: LogSettings
     static: StaticSettings
+    pay: PaySettings
 
 
 def load_config(path: str | None = None):
@@ -84,5 +90,6 @@ def load_config(path: str | None = None):
         bot=BotSettings(token=token, admin_ids=admin_ids),
         db=db,
         log=log,
-        static=StaticSettings(main_photo_path=env('MAIN_PHOTO_PATH'))
+        static=StaticSettings(main_photo_path=env('MAIN_PHOTO_PATH')),
+        pay=PaySettings(token=env('YOOMONEY_TOKEN'))
     )

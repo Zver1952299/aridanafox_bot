@@ -1,8 +1,8 @@
 import logging
 
 from aiogram import Router, Bot, F
-from aiogram.filters import CommandStart, KICKED, ChatMemberUpdatedFilter
-from aiogram.types import Message, FSInputFile, BotCommandScopeChat, CallbackQuery, ChatMemberUpdated
+from aiogram.filters import CommandStart, Command, KICKED, ChatMemberUpdatedFilter
+from aiogram.types import Message, FSInputFile, BotCommandScopeChat, CallbackQuery, ChatMemberUpdated, LabeledPrice
 from aiogram.enums import BotCommandScopeType
 from app.bot.config import Config
 from locales.ru.txt import RU
@@ -68,6 +68,12 @@ async def process_start_command(
         caption=RU.get(TextKey.START, 'Добро пожаловать!'),
         reply_markup=get_start_kb()
     )
+
+
+# @user_router.message(Command('pay'))
+# async def process_pay_command(message: Message, bot: Bot, config: Config):
+#     data = await bot.send_invoice(chat_id=message.chat.id, title='Тест покупка', description='Описание теста', payload='invoice', provider_token='381764678:TEST:129625', currency='RUB', prices=[LabeledPrice(label='Тест покупка', amount=10000)])
+#     print(data)
 
 
 @user_router.callback_query(F.data == "services")
