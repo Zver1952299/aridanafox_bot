@@ -1,8 +1,8 @@
 import logging
 
 from aiogram import Router, Bot, F
-from aiogram.filters import CommandStart, Command, KICKED, ChatMemberUpdatedFilter
-from aiogram.types import Message, FSInputFile, BotCommandScopeChat, CallbackQuery, ChatMemberUpdated, LabeledPrice
+from aiogram.filters import CommandStart, KICKED, ChatMemberUpdatedFilter
+from aiogram.types import Message, FSInputFile, BotCommandScopeChat, CallbackQuery, ChatMemberUpdated
 from aiogram.enums import BotCommandScopeType
 from app.bot.config import Config
 from locales.ru.txt import RU
